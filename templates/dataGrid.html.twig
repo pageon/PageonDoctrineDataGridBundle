@@ -1,0 +1,60 @@
+<table class="table table-striped table-hover">
+  <thead>
+  <tr>
+    {% set hasFilters = false %}
+    {% for column in dataGrid.columns %}
+      <th scope="col">
+        {% if column.route is null %}
+          {% if(column.sortable) %}
+            {{ knp_pagination_sortable(dataGrid.paginator, column.label|trans|ucfirst, column.fullName) }}
+          {% else %}
+            {{ column.label|trans|ucfirst }}
+          {% endif %}
+          {% if(column.filterable) %}
+            {% set hasFilters = true %}
+          {% endif %}
+        {% endif %}
+      </th>
+    {% endfor %}
+  </tr>
+  {% if(hasFilters) %}
+    <tr>
+      {% for column in dataGrid.columns %}
+        <th scope="col">
+          {% if(column.filterable) %}
+            {{ knp_pagination_filter(dataGrid.paginator, {(column.fullName): column.label}) }}
+          {% endif %}
+        </th>
+      {% endfor %}
+    </tr>
+  {% endif %}
+  </thead>
+  <tfoot>
+  <tr>
+    <td colspan="{{ dataGrid.columns|count }}">
+      <div class="d-flex align-self-center justify-content-center">{{ knp_pagination_render(dataGrid.paginator) }}</div>
+    </td>
+  </tr>
+  </tfoot>
+  <tbody>
+  {% for row in dataGrid.paginator %}
+    <tr>
+      {% for column in dataGrid.columns %}
+        <td>
+          {% if column.route is null %}
+            {{ attribute(row, column.name) }}
+          {% else %}
+            <a href="{{ path(column.route, column.routeAttributes(row), column.rou) }}"{% if column.class %} class="{{ column.class }}"{% endif %}>{{ column.label|trans|ucfirst }}</a>
+          {% endif %}
+        </td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+  {% if dataGrid.paginator is empty %}
+    <tr>
+      <td colspan="{{ dataGrid.columns|count }}">{{ dataGrid.noResultsMessage|trans }}</td>
+    </tr>
+  {% endif %}
+  </tbody>
+</table>
+

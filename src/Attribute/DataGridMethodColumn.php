@@ -1,0 +1,31 @@
+<?php
+
+namespace Pageon\DoctrineDataGridBundle\Attribute;
+
+use Attribute;
+
+#[Attribute(Attribute::TARGET_METHOD)]
+final class DataGridMethodColumn
+{
+    public function __construct(
+        private int $order = 0,
+        private ?string $label = null,
+        private ?string $class = null,
+    ) {
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function getClass(): ?string
+    {
+        return $this->class;
+    }
+}

@@ -1,0 +1,30 @@
+<?php
+
+namespace Pageon\DataGrid\Twig;
+
+use Pageon\DataGrid\DataGrid;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
+final class DataGridExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction(
+                'pageon_datagrid',
+                [$this, 'parseDataGrid'],
+                [
+                    'needs_environment' => true,
+                    'is_safe' => ['html']
+                ]
+            )
+        ];
+    }
+
+    public function parseDataGrid(Environment $twig, DataGrid $dataGrid): string
+    {
+        return $twig->render('@PageonDoctrineDataGridBundle/dataGrid.html.twig', ['dataGrid' => $dataGrid]);
+    }
+}

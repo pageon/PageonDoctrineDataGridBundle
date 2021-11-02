@@ -1,0 +1,23 @@
+{
+  "name": "pageon/pageon-doctrine-data-grid-bundle",
+  "description": "A bundle that wraps around the knp paginator bundle and doctrine to generate a data grid from your entity",
+  "type": "symfony-bundle",
+  "require": {
+    "php": "^8.0",
+    "doctrine/orm": "^2.7",
+    "knplabs/knp-paginator-bundle": "^5.0",
+    "friendsofphp/proxy-manager-lts": "^1.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Jelmer Prins",
+      "email": "jelmer@pageon.be"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Pageon\\DoctrineDataGridBundle\\": "src"
+    }
+  }
+}
