@@ -2,7 +2,7 @@
 
 namespace Pageon\DoctrineDataGridBundle\Twig;
 
-use Pageon\DataGrid\DataGrid;
+use Pageon\DoctrineDataGridBundle\DataGrid\DataGrid;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

@@ -2,13 +2,14 @@
 
 namespace Pageon\DoctrineDataGridBundle;
 
+use Pageon\DoctrineDataGridBundle\DependencyInjection\PageonDoctrineDataGridBundleExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use function dirname;
 
 final class PageonDoctrineDataGridBundle extends Bundle
 {
-    public function getPath(): string
+    public function getContainerExtension(): ExtensionInterface
     {
-        return dirname(__DIR__);
+        return new PageonDoctrineDataGridBundleExtension();
     }
 }
