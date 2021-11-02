@@ -25,6 +25,6 @@ final class DataGridExtension extends AbstractExtension
 
     public function parseDataGrid(Environment $twig, DataGrid $dataGrid): string
     {
-        return $twig->render('@PageonDoctrineDataGridBundle/dataGrid.html.twig', ['dataGrid' => $dataGrid]);
+        return $twig->render('@PageonDoctrineDataGrid/dataGrid.html.twig', ['dataGrid' => $dataGrid]);
     }
 }
