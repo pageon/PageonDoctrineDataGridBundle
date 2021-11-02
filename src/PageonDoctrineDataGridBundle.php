@@ -1,6 +1,6 @@
 <?php
 
-namespace Pageon\DataGrid;
+namespace Pageon\DoctrineDataGridBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use function dirname;

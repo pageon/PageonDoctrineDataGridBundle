@@ -3,7 +3,9 @@ services:
     autowire: true
     autoconfigure: true
 
-  Pageon\DataGrid\Twig\DataGridExtension:
+  Pageon\DoctrineDataGridBundle\DataGrid\DataGridFactory:
+
+  Pageon\DoctrineDataGridBundle\Twig\DataGridExtension:
     tags: [ 'twig.extension' ]
 
   knp_paginator.subscriber.filtration:
@@ -11,4 +13,3 @@ services:
     tags:
       - { name: knp_paginator.subscriber }
 
-  Pageon\DoctrineDataGridBundle\DataGrid\DataGridFactory:

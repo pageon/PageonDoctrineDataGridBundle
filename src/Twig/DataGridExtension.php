@@ -1,6 +1,6 @@
 <?php
 
-namespace Pageon\DataGrid\Twig;
+namespace Pageon\DoctrineDataGridBundle\Twig;
 
 use Pageon\DataGrid\DataGrid;
 use Twig\Environment;
