@@ -44,7 +44,7 @@
           {% if column.route is null %}
             {{ attribute(row, column.name) }}
           {% else %}
-            <a href="{{ path(column.route, column.routeAttributes(row)) }}"{% if column.class %} class="{{ column.class }}"{% endif %}>{{ column.label|trans|ucfirst }}</a>
+            <a href="{{ path(column.route, column.routeAttributes(row)) }}"{% if column.class %} class="{{ column.class }}"{% endif %}>{% if column.iconClass %}<i class="{{ column.iconClass }}"></i> {% endif %}{{ column.label|trans|ucfirst }}</a>
           {% endif %}
         </td>
       {% endfor %}
@@ -57,4 +57,3 @@
   {% endif %}
   </tbody>
 </table>
-

@@ -35,7 +35,7 @@ final class DataGridFactory
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
         /** @var DataGridAttribute $dataGridInfo */
         $dataGridInfo = $classInfo->getAttributes(DataGridAttribute::class)[0]?->newInstance()
-            ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
+                        ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
 
         $queryBuilder = $repository->createQueryBuilder($dataGridInfo->getQueryBuilderAlias())
             ->select($dataGridInfo->getQueryBuilderAlias());
@@ -75,12 +75,13 @@ final class DataGridFactory
             /** @var DataGridPropertyColumn $columnProperties */
             $columnProperties = $attribute->newInstance();
             $columns[] = Column::createPropertyColumn(
-                $property->getName(),
-                $columnProperties->getLabel() ?? $property->getName(),
-                $className,
-                $columnProperties->isSortable(),
-                $columnProperties->isFilterable(),
-                $columnProperties->getOrder(),
+                name: $property->getName(),
+                label: $columnProperties->getLabel() ?? $property->getName(),
+                entityAlias: $className,
+                sortable: $columnProperties->isSortable(),
+                filterable: $columnProperties->isFilterable(),
+                order: $columnProperties->getOrder(),
+                class: $columnProperties->getClass(),
             );
         }
 
@@ -93,8 +94,9 @@ final class DataGridFactory
             /** @var DataGridMethodColumn $columnProperties */
             $columnProperties = $attribute->newInstance();
             $columns[] = Column::createMethodColumn(
-                $columnProperties->getLabel() ?? $method->getName(),
-                $columnProperties->getOrder(),
+                label: $columnProperties->getLabel() ?? $method->getName(),
+                order: $columnProperties->getOrder(),
+                class: $columnProperties->getClass(),
             );
         }
 
@@ -102,12 +104,14 @@ final class DataGridFactory
             /** @var DataGridActionColumn $actionProperties */
             $actionProperties = $action->newInstance();
             $columns[] = Column::createActionColumn(
-                $actionProperties->getLabel(),
-                $actionProperties->getOrder(),
-                $actionProperties->getRoute(),
-                $actionProperties->getRouteAttributes(),
-                $actionProperties->getRouteAttributesCallback(),
-                $actionProperties->getClass(),
+                label: $actionProperties->getLabel(),
+                order: $actionProperties->getOrder(),
+                route: $actionProperties->getRoute(),
+                routeAttributes: $actionProperties->getRouteAttributes(),
+                routeAttributesCallback: $actionProperties->getRouteAttributesCallback(),
+                routeLocale: $actionProperties->getRouteLocale(),
+                class: $actionProperties->getClass(),
+                iconClass: $actionProperties->getIconClass(),
             );
         }
 

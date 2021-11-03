@@ -10,11 +10,12 @@ final class DataGridActionColumn
     public function __construct(
         private string $route,
         private array $routeAttributes = [],
+        private ?array $routeAttributesCallback = null,
         private ?string $routeLocale = null,
         private int $order = 1,
         private ?string $label = null,
-        private string $class = 'btn btn-primary',
-        private ?array $routeAttributesCallback = null,
+        private string $class = 'btn btn-primary btn-sm float-end',
+        private ?string $iconClass = null,
     ) {
     }
 
@@ -51,5 +52,10 @@ final class DataGridActionColumn
     public function getClass(): string
     {
         return $this->class;
+    }
+
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
     }
 }

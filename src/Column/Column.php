@@ -16,6 +16,7 @@ final class Column
         private ?array $routeAttributesCallback = null,
         ?string $routeLocale = null,
         private ?string $class = null,
+        private ?string $iconClass = null,
     ) {
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
@@ -63,6 +64,7 @@ final class Column
         ?array $routeAttributesCallback = null,
         ?string $routeLocale = null,
         ?string $class = null,
+        ?string $iconClass = null,
     ): self {
         return new self(
             name: $label,
@@ -73,6 +75,7 @@ final class Column
             routeAttributesCallback: $routeAttributesCallback,
             routeLocale: $routeLocale,
             class: $class,
+            iconClass: $iconClass,
         );
     }
 
@@ -127,5 +130,10 @@ final class Column
     public function getClass(): ?string
     {
         return $this->class;
+    }
+
+    public function getIconClass(): ?string
+    {
+        return $this->iconClass;
     }
 }
