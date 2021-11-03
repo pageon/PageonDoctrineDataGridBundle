@@ -8,7 +8,6 @@ use Attribute;
 final class DataGridMethodColumn
 {
     public function __construct(
-        private string $name,
         private int $order = 0,
         private ?string $label = null,
         private ?string $class = null,
