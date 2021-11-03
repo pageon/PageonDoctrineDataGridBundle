@@ -95,6 +95,7 @@ final class DataGridFactory
             /** @var DataGridMethodColumn $columnProperties */
             $columnProperties = $attribute->newInstance();
             $columns[] = Column::createMethodColumn(
+                name: $method->getName(),
                 label: $columnProperties->getLabel() ?? $method->getName(),
                 order: $columnProperties->getOrder(),
                 class: $columnProperties->getClass(),

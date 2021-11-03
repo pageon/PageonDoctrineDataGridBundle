@@ -47,12 +47,13 @@ final class Column
     }
 
     public static function createMethodColumn(
+        string $name,
         string $label,
         int $order,
         ?string $class = null,
     ): self {
         return new self(
-            name: $label,
+            name: $name,
             label: $label,
             order: $order,
             class: $class,
