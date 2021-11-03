@@ -17,6 +17,7 @@ final class Column
         ?string $routeLocale = null,
         private ?string $class = null,
         private ?string $iconClass = null,
+        private ?array $valueCallback = null,
     ) {
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
@@ -31,6 +32,7 @@ final class Column
         bool $filterable,
         int $order,
         ?string $class = null,
+        ?array $valueCallback = null,
     ): self {
         return new self(
             name: $name,
@@ -40,6 +42,7 @@ final class Column
             filterable: $filterable,
             order: $order,
             class: $class,
+            valueCallback: $valueCallback,
         );
     }
 
@@ -135,5 +138,14 @@ final class Column
     public function getIconClass(): ?string
     {
         return $this->iconClass;
+    }
+
+    public function getValue(mixed $value): mixed
+    {
+        if ($this->valueCallback !== null) {
+            return call_user_func($this->valueCallback, $value);
+        }
+
+        return $value;
     }
 }

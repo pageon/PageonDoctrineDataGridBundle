@@ -13,6 +13,7 @@ final class DataGridPropertyColumn
         private int $order = 0,
         private ?string $label = null,
         private ?string $class = null,
+        private ?array $valueCallback = null,
     ) {
     }
 
@@ -39,5 +40,10 @@ final class DataGridPropertyColumn
     public function getClass(): ?string
     {
         return $this->class;
+    }
+
+    public function getValueCallback(): ?array
+    {
+        return $this->valueCallback;
     }
 }

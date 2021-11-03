@@ -82,6 +82,7 @@ final class DataGridFactory
                 filterable: $columnProperties->isFilterable(),
                 order: $columnProperties->getOrder(),
                 class: $columnProperties->getClass(),
+                valueCallback: $columnProperties->getValueCallback(),
             );
         }
 
