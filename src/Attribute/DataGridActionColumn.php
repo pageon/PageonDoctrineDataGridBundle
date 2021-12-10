@@ -16,6 +16,7 @@ final class DataGridActionColumn
         private ?string $label = null,
         private string $class = 'btn btn-primary btn-sm float-end',
         private ?string $iconClass = null,
+        private ?string $requiredRole = null,
     ) {
     }
 
@@ -57,5 +58,10 @@ final class DataGridActionColumn
     public function getIconClass(): ?string
     {
         return $this->iconClass;
+    }
+
+    public function getRequiredRole(): ?string
+    {
+        return $this->requiredRole;
     }
 }

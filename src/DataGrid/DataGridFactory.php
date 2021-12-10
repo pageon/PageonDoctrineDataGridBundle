@@ -14,6 +14,8 @@ use ProxyManager\Proxy\LazyLoadingInterface;
 use ProxyManager\Proxy\ValueHolderInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class DataGridFactory
 {
@@ -22,7 +24,8 @@ final class DataGridFactory
     public function __construct(
         private PaginatorInterface $paginator,
         private EntityManagerInterface $entityManager,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
     }
 
@@ -105,6 +108,13 @@ final class DataGridFactory
         foreach ($classInfo->getAttributes(DataGridActionColumn::class) as $action) {
             /** @var DataGridActionColumn $actionProperties */
             $actionProperties = $action->newInstance();
+            if (
+                $actionProperties->getRequiredRole() !== null
+                && $this->authorizationChecker !== null
+                && !$this->authorizationChecker->isGranted($actionProperties->getRequiredRole())
+            ) {
+                continue;
+            }
             $columns[] = Column::createActionColumn(
                 label: $actionProperties->getLabel(),
                 order: $actionProperties->getOrder(),
