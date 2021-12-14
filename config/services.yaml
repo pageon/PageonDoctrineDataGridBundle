@@ -11,5 +11,5 @@ services:
   knp_paginator.subscriber.filtration:
     class: Pageon\DoctrineDataGridBundle\Filtration\FiltrationSubscriber
     tags:
-      - { name: knp_paginator.subscriber }
+      - { name: kernel.event_subscriber }
 
