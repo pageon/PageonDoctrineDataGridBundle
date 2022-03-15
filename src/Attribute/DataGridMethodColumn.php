@@ -11,6 +11,7 @@ final class DataGridMethodColumn
         private int $order = 0,
         private ?string $label = null,
         private ?string $class = null,
+        private bool $html = false,
     ) {
     }
 
@@ -32,5 +33,10 @@ final class DataGridMethodColumn
     public function getClass(): ?string
     {
         return $this->class;
+    }
+
+    public function isHtml(): bool
+    {
+        return $this->html;
     }
 }

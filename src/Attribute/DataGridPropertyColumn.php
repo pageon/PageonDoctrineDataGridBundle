@@ -14,6 +14,7 @@ final class DataGridPropertyColumn
         private ?string $label = null,
         private ?string $class = null,
         private ?array $valueCallback = null,
+        private bool $html = false,
     ) {
     }
 
@@ -45,5 +46,10 @@ final class DataGridPropertyColumn
     public function getValueCallback(): ?array
     {
         return $this->valueCallback;
+    }
+
+    public function isHtml(): bool
+    {
+        return $this->html;
     }
 }

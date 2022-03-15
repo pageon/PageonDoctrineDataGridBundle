@@ -18,6 +18,7 @@ final class Column
         private ?string $class = null,
         private ?string $iconClass = null,
         private ?array $valueCallback = null,
+        private bool $html = false,
     ) {
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
@@ -33,6 +34,7 @@ final class Column
         int $order,
         ?string $class = null,
         ?array $valueCallback = null,
+        bool $html = false,
     ): self {
         return new self(
             name: $name,
@@ -43,6 +45,7 @@ final class Column
             order: $order,
             class: $class,
             valueCallback: $valueCallback,
+            html: $html,
         );
     }
 
@@ -51,12 +54,14 @@ final class Column
         string $label,
         int $order,
         ?string $class = null,
+        bool $html = false,
     ): self {
         return new self(
             name: $name,
             label: $label,
             order: $order,
             class: $class,
+            html: $html,
         );
     }
 
@@ -148,5 +153,10 @@ final class Column
         }
 
         return $value;
+    }
+
+    public function isHtml(): bool
+    {
+        return $this->html;
     }
 }

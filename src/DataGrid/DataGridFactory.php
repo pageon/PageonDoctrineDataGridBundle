@@ -86,6 +86,7 @@ final class DataGridFactory
                 order: $columnProperties->getOrder(),
                 class: $columnProperties->getClass(),
                 valueCallback: $columnProperties->getValueCallback(),
+                html: $columnProperties->isHtml(),
             );
         }
 
@@ -102,6 +103,7 @@ final class DataGridFactory
                 label: $columnProperties->getLabel() ?? $method->getName(),
                 order: $columnProperties->getOrder(),
                 class: $columnProperties->getClass(),
+                html: $columnProperties->isHtml(),
             );
         }
 
