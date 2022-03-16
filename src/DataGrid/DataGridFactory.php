@@ -49,11 +49,7 @@ final class DataGridFactory
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
 
         return new DataGrid(
-            $this->paginator->paginate(
-                $repository->createQueryBuilder($dataGridInfo->getQueryBuilderAlias()),
-                $page,
-                $limit
-            ),
+            $this->paginator->paginate($queryBuilder, $page, $limit),
             $this->getColumns(
                 $classInfo,
                 $dataGridInfo->getQueryBuilderAlias()
