@@ -23,8 +23,12 @@ final class DataGridExtension extends AbstractExtension
         ];
     }
 
-    public function parseDataGrid(Environment $twig, DataGrid $dataGrid): string
-    {
-        return $twig->render('@PageonDoctrineDataGrid/dataGrid.html.twig', ['dataGrid' => $dataGrid]);
+    public function parseDataGrid(
+        Environment $twig,
+        DataGrid $dataGrid,
+        string $template = '@PageonDoctrineDataGrid/dataGrid.html.twig',
+        array $parameters = []
+    ): string {
+        return $twig->render($template, ['dataGrid' => $dataGrid] + $parameters);
     }
 }
