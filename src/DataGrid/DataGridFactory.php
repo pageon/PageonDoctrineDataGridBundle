@@ -97,6 +97,16 @@ final class DataGridFactory
 
             /** @var DataGridPropertyColumn $columnProperties */
             $columnProperties = $attribute->newInstance();
+
+            $showLink = true;
+            if (
+                $this->authorizationChecker !== null
+                && $columnProperties->getRouteRole() !== null
+                && !$this->authorizationChecker->isGranted($columnProperties->getRouteRole())
+            ) {
+                $showLink = false;
+            }
+
             $columns[] = Column::createPropertyColumn(
                 name: $property->getName(),
                 label: $columnProperties->getLabel() ?? $property->getName(),
@@ -104,10 +114,10 @@ final class DataGridFactory
                 sortable: $columnProperties->isSortable(),
                 filterable: $columnProperties->isFilterable(),
                 order: $columnProperties->getOrder(),
-                route: $columnProperties->getRoute(),
-                routeAttributes: $columnProperties->getRouteAttributes(),
-                routeAttributesCallback: $columnProperties->getRouteAttributesCallback(),
-                routeLocale: $columnProperties->getRouteLocale(),
+                route: $showLink ? $columnProperties->getRoute() : null,
+                routeAttributes: $showLink ? $columnProperties->getRouteAttributes() : null,
+                routeAttributesCallback: $showLink ? $columnProperties->getRouteAttributesCallback() : null,
+                routeLocale: $showLink ? $columnProperties->getRouteLocale() : null,
                 class: $columnProperties->getClass(),
                 valueCallback: $columnProperties->getValueCallback(),
                 html: $columnProperties->isHtml(),
@@ -120,18 +130,28 @@ final class DataGridFactory
                 continue;
             }
 
-            /** @var DataGridMethodColumn $columnProperties */
-            $columnProperties = $attribute->newInstance();
+            /** @var DataGridMethodColumn $methodProperties */
+            $methodProperties = $attribute->newInstance();
+
+            $showLink = true;
+            if (
+                $this->authorizationChecker !== null
+                && $methodProperties->getRouteRole() !== null
+                && !$this->authorizationChecker->isGranted($methodProperties->getRouteRole())
+            ) {
+                $showLink = false;
+            }
+
             $columns[] = Column::createMethodColumn(
                 name: $method->getName(),
-                label: $columnProperties->getLabel() ?? $method->getName(),
-                order: $columnProperties->getOrder(),
-                route: $columnProperties->getRoute(),
-                routeAttributes: $columnProperties->getRouteAttributes(),
-                routeAttributesCallback: $columnProperties->getRouteAttributesCallback(),
-                routeLocale: $columnProperties->getRouteLocale(),
-                class: $columnProperties->getClass(),
-                html: $columnProperties->isHtml(),
+                label: $methodProperties->getLabel() ?? $method->getName(),
+                order: $methodProperties->getOrder(),
+                route: $showLink ? $methodProperties->getRoute() : null,
+                routeAttributes: $showLink ? $methodProperties->getRouteAttributes() : null,
+                routeAttributesCallback: $showLink ? $methodProperties->getRouteAttributesCallback() : null,
+                routeLocale: $showLink ? $methodProperties->getRouteLocale() : null,
+                class: $methodProperties->getClass(),
+                html: $methodProperties->isHtml(),
             );
         }
 
@@ -139,8 +159,8 @@ final class DataGridFactory
             /** @var DataGridActionColumn $actionProperties */
             $actionProperties = $action->newInstance();
             if (
-                $actionProperties->getRequiredRole() !== null
-                && $this->authorizationChecker !== null
+                $this->authorizationChecker !== null
+                && $actionProperties->getRequiredRole() !== null
                 && !$this->authorizationChecker->isGranted($actionProperties->getRequiredRole())
             ) {
                 continue;

@@ -16,6 +16,7 @@ final class DataGridMethodColumn
         private array $routeAttributes = [],
         private ?array $routeAttributesCallback = null,
         private ?string $routeLocale = null,
+        private ?string $routeRole = null,
     ) {
     }
 
@@ -62,5 +63,10 @@ final class DataGridMethodColumn
     public function getRouteLocale(): ?string
     {
         return $this->routeLocale;
+    }
+
+    public function getRouteRole(): ?string
+    {
+        return $this->routeRole;
     }
 }
