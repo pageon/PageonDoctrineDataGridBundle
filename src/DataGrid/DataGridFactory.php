@@ -32,7 +32,8 @@ final class DataGridFactory
     public function forEntity(
         string $fullyQualifiedClassName,
         ?callable $queryBuilderCallback = null,
-        ?int $limit = null
+        ?int $limit = null,
+        Column ...$extraColumns
     ): DataGrid {
         $repository = $this->entityManager->getRepository($fullyQualifiedClassName);
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
@@ -53,7 +54,7 @@ final class DataGridFactory
             $this->getColumns(
                 $classInfo,
                 $dataGridInfo->getQueryBuilderAlias()
-            ),
+            ) + $extraColumns,
             $dataGridInfo->getNoResultsMessage()
         );
     }
@@ -61,7 +62,8 @@ final class DataGridFactory
     public function forArray(
         string $fullyQualifiedClassName,
         array $data = [],
-        ?int $limit = null
+        ?int $limit = null,
+        Column ...$extraColumns
     ): DataGrid {
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
         /** @var DataGridAttribute $dataGridInfo */
@@ -75,7 +77,7 @@ final class DataGridFactory
             $this->getColumns(
                 $classInfo,
                 $dataGridInfo->getQueryBuilderAlias()
-            ),
+            ) + $extraColumns,
             $dataGridInfo->getNoResultsMessage()
         );
     }
