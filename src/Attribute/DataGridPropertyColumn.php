@@ -15,6 +15,10 @@ final class DataGridPropertyColumn
         private ?string $class = null,
         private ?array $valueCallback = null,
         private bool $html = false,
+        private string $route,
+        private array $routeAttributes = [],
+        private ?array $routeAttributesCallback = null,
+        private ?string $routeLocale = null,
     ) {
     }
 
@@ -51,5 +55,25 @@ final class DataGridPropertyColumn
     public function isHtml(): bool
     {
         return $this->html;
+    }
+
+    public function getRoute(): string
+    {
+        return $this->route;
+    }
+
+    public function getRouteAttributes(): array
+    {
+        return $this->routeAttributes;
+    }
+
+    public function getRouteAttributesCallback(): ?array
+    {
+        return $this->routeAttributesCallback;
+    }
+
+    public function getRouteLocale(): ?string
+    {
+        return $this->routeLocale;
     }
 }

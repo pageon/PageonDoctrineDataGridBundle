@@ -19,6 +19,7 @@ final class Column
         private ?string $iconClass = null,
         private ?array $valueCallback = null,
         private bool $html = false,
+        private bool $showColumnLabel = true,
     ) {
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
@@ -32,6 +33,10 @@ final class Column
         bool $sortable,
         bool $filterable,
         int $order,
+        ?string $route = null,
+        array $routeAttributes = [],
+        ?array $routeAttributesCallback = null,
+        ?string $routeLocale = null,
         ?string $class = null,
         ?array $valueCallback = null,
         bool $html = false,
@@ -43,6 +48,10 @@ final class Column
             sortable: $sortable,
             filterable: $filterable,
             order: $order,
+            route: $route,
+            routeAttributes: $routeAttributes,
+            routeAttributesCallback: $routeAttributesCallback,
+            routeLocale: $routeLocale,
             class: $class,
             valueCallback: $valueCallback,
             html: $html,
@@ -53,6 +62,10 @@ final class Column
         string $name,
         string $label,
         int $order,
+        ?string $route = null,
+        array $routeAttributes = [],
+        ?array $routeAttributesCallback = null,
+        ?string $routeLocale = null,
         ?string $class = null,
         bool $html = false,
     ): self {
@@ -60,6 +73,10 @@ final class Column
             name: $name,
             label: $label,
             order: $order,
+            route: $route,
+            routeAttributes: $routeAttributes,
+            routeAttributesCallback: $routeAttributesCallback,
+            routeLocale: $routeLocale,
             class: $class,
             html: $html,
         );
@@ -85,6 +102,7 @@ final class Column
             routeLocale: $routeLocale,
             class: $class,
             iconClass: $iconClass,
+            showColumnLabel: false,
         );
     }
 
@@ -158,5 +176,10 @@ final class Column
     public function isHtml(): bool
     {
         return $this->html;
+    }
+
+    public function showColumnLabel(): bool
+    {
+        return $this->showColumnLabel;
     }
 }

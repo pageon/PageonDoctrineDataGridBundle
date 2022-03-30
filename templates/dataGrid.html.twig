@@ -4,16 +4,18 @@
         {% set hasFilters = false %}
         {% for column in dataGrid.columns %}
             <th scope="col">
-                {% if column.route is null %}
-                    {% if(column.sortable) %}
-                        {{ knp_pagination_sortable(dataGrid.paginator, column.label|trans|ucfirst, column.fullName) }}
-                    {% else %}
-                        {{ column.label|trans|ucfirst }}
+                {% block columnHeader %}
+                    {% if column.showColumnLabel %}
+                        {% if(column.sortable) %}
+                            {{ knp_pagination_sortable(dataGrid.paginator, column.label|trans|ucfirst, column.fullName) }}
+                        {% else %}
+                            {{ column.label|trans|ucfirst }}
+                        {% endif %}
+                        {% if(column.filterable) %}
+                            {% set hasFilters = true %}
+                        {% endif %}
                     {% endif %}
-                    {% if(column.filterable) %}
-                        {% set hasFilters = true %}
-                    {% endif %}
-                {% endif %}
+                {% endblock %}
             </th>
         {% endfor %}
     </tr>
@@ -21,9 +23,11 @@
         <tr>
             {% for column in dataGrid.columns %}
                 <th scope="col">
-                    {% if(column.filterable) %}
-                        {{ knp_pagination_filter(dataGrid.paginator, {(column.fullName): column.label}) }}
-                    {% endif %}
+                    {% block columnFilter %}
+                        {% if(column.filterable) %}
+                            {{ knp_pagination_filter(dataGrid.paginator, {(column.fullName): column.label}) }}
+                        {% endif %}
+                    {% endblock %}
                 </th>
             {% endfor %}
         </tr>
@@ -32,7 +36,9 @@
     <tfoot>
     <tr>
         <td colspan="{{ dataGrid.columns|count }}">
-            <div class="d-flex align-self-center justify-content-center">{{ knp_pagination_render(dataGrid.paginator) }}</div>
+            {% block paginator %}
+                <div class="d-flex align-self-center justify-content-center">{{ knp_pagination_render(dataGrid.paginator) }}</div>
+            {% endblock %}
         </td>
     </tr>
     </tfoot>
@@ -41,22 +47,21 @@
         <tr>
             {% for column in dataGrid.columns %}
                 <td>
-                    {% if column.route is null %}
-                      {%if column.isHtml %}
-                        {{ column.value(attribute(row, column.name))|raw }}
-                      {%else%}
-                        {{ column.value(attribute(row, column.name)) }}
-                      {%endif%}
-                    {% else %}
-                        <a href="{{ path(column.route, column.routeAttributes(row)) }}"{% if column.class %} class="{{ column.class }}"{% endif %}>{% if column.iconClass %}<i class="{{ column.iconClass }}"></i> {% endif %}{{ column.label|trans|ucfirst }}</a>
-                    {% endif %}
+                    {% block columnValue %}
+                        {% set value = column.showColumnLabel ? column.value(attribute(row, column.name)) : column.label|trans|ucfirst %}
+                        {% if column.route is null %}
+                            {% if column.isHtml %}{{ value|raw }}{% else %}{{ value }}{% endif %}
+                        {% else %}
+                            <a href="{{ path(column.route, column.routeAttributes(row)) }}"{% if column.class %} class="{{ column.class }}"{% endif %}>{% if column.iconClass %}<i class="{{ column.iconClass }}"></i> {% endif %}                            {% if column.isHtml %}{{ value|raw }}{% else %}{{ value }}{% endif %}</a>
+                        {% endif %}
+                    {% endblock %}
                 </td>
             {% endfor %}
         </tr>
     {% endfor %}
     {% if dataGrid.paginator is empty %}
         <tr>
-            <td colspan="{{ dataGrid.columns|count }}">{{ dataGrid.noResultsMessage|trans }}</td>
+            <td colspan="{{ dataGrid.columns|count }}">{% block noResults %}{{ dataGrid.noResultsMessage|trans }}{% endblock %}</td>
         </tr>
     {% endif %}
     </tbody>
