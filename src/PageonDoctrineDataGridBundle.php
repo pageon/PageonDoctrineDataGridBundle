@@ -8,8 +8,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class PageonDoctrineDataGridBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): void
+    public function getPath(): string
     {
-        $container->addCompilerPass(new TwigExtensionPass());
+        return \dirname(__DIR__);
     }
 }
