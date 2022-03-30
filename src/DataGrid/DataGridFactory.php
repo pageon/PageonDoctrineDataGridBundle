@@ -38,7 +38,7 @@ final class DataGridFactory
         $repository = $this->entityManager->getRepository($fullyQualifiedClassName);
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
         /** @var DataGridAttribute $dataGridInfo */
-        $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)->newInstance()
+        $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)?->newInstance()
                         ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
 
         $queryBuilder = $repository->createQueryBuilder($dataGridInfo->getQueryBuilderAlias())
@@ -67,8 +67,8 @@ final class DataGridFactory
     ): DataGrid {
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
         /** @var DataGridAttribute $dataGridInfo */
-        $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)->newInstance()
-                        ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
+        $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)?->newInstance()
+                        ?? throw new InvalidArgumentException('The class needs to have the DataGrid attribute');
 
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
 
