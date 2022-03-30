@@ -58,6 +58,28 @@ final class DataGridFactory
         );
     }
 
+    public function forArray(
+        string $fullyQualifiedClassName,
+        array $data = [],
+        ?int $limit = null
+    ): DataGrid {
+        $classInfo = new ReflectionClass($fullyQualifiedClassName);
+        /** @var DataGridAttribute $dataGridInfo */
+        $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)->newInstance()
+                        ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
+
+        $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
+
+        return new DataGrid(
+            $this->paginator->paginate($data, $page, $limit),
+            $this->getColumns(
+                $classInfo,
+                $dataGridInfo->getQueryBuilderAlias()
+            ),
+            $dataGridInfo->getNoResultsMessage()
+        );
+    }
+
     /**
      * @return Column[]
      */
