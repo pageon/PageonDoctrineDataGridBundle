@@ -48,7 +48,7 @@
             {% for column in dataGrid.columns %}
                 <td>
                     {% block columnValue %}
-                        {% set value = column.showColumnLabel ? column.value(attribute(row, column.name)) : column.label|trans|ucfirst %}
+                        {% set value = column.showColumnLabel or column.hasValueCallback? column.value(attribute(row, column.name)) : column.label|trans|ucfirst %}
                         {% if column.route is null %}
                             {% if column.isHtml %}{{ value|raw }}{% else %}{{ value }}{% endif %}
                         {% else %}

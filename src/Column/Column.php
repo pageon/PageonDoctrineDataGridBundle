@@ -178,6 +178,11 @@ final class Column
         return $this->html;
     }
 
+    public function hasValueCallback(): bool
+    {
+        return $this->valueCallback !== null;
+    }
+
     public function showColumnLabel(): bool
     {
         return $this->showColumnLabel;
