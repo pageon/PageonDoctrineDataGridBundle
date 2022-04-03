@@ -47,13 +47,15 @@ final class DataGridFactory
         }
 
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
+        $columns = $this->getColumns(
+            $classInfo,
+            $dataGridInfo->getQueryBuilderAlias()
+        );
+        array_push($columns, ...$extraColumns);
 
         return new DataGrid(
             $this->paginator->paginate($queryBuilder, $page, $limit),
-            $this->getColumns(
-                $classInfo,
-                $dataGridInfo->getQueryBuilderAlias()
-            ) + $extraColumns,
+            $columns,
             $dataGridInfo->getNoResultsMessage()
         );
     }
@@ -70,13 +72,15 @@ final class DataGridFactory
                         ?? throw new InvalidArgumentException('The class needs to have the DataGrid attribute');
 
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
+        $columns = $this->getColumns(
+            $classInfo,
+            $dataGridInfo->getQueryBuilderAlias()
+        );
+        array_push($columns, ...$extraColumns);
 
         return new DataGrid(
             $this->paginator->paginate($data, $page, $limit),
-            $this->getColumns(
-                $classInfo,
-                $dataGridInfo->getQueryBuilderAlias()
-            ) + $extraColumns,
+            $columns,
             $dataGridInfo->getNoResultsMessage()
         );
     }
