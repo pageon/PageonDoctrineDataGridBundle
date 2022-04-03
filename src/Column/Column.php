@@ -4,7 +4,7 @@ namespace Pageon\DoctrineDataGridBundle\Column;
 
 final class Column
 {
-    private function __construct(
+    public function __construct(
         private string $name,
         private string $label,
         private ?string $entityAlias = null,

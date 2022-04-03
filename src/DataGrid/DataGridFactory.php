@@ -14,7 +14,6 @@ use ProxyManager\Proxy\LazyLoadingInterface;
 use ProxyManager\Proxy\ValueHolderInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class DataGridFactory
