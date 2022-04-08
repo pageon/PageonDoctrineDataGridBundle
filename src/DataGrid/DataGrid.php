@@ -15,6 +15,7 @@ final class DataGrid
         private array $columns,
         private string $noResultsMessage
     ) {
+        usort($this->columns, static fn (Column $a, Column $b) => $a->getOrder() <=> $b->getOrder());
     }
 
     public function getPaginator(): PaginationInterface
