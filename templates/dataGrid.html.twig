@@ -58,9 +58,11 @@
         </tr>
     {% endfor %}
     {% if dataGrid.paginator is empty %}
+        {% block noResults %}
         <tr>
-            <td colspan="{{ dataGrid.columns|count }}">{% block noResults %}{{ dataGrid.noResultsMessage|trans }}{% endblock %}</td>
+            <td colspan="{{ dataGrid.columns|count }}">{{ dataGrid.noResultsMessage|trans }}</td>
         </tr>
+        {% endblock %}
     {% endif %}
     </tbody>
 </table>
