@@ -33,15 +33,20 @@
         </tr>
     {% endif %}
     </thead>
-    <tfoot>
-    <tr>
-        <td colspan="{{ dataGrid.columns|count }}">
-            {% block paginator %}
-                <div class="d-flex align-self-center justify-content-center">{{ knp_pagination_render(dataGrid.paginator) }}</div>
-            {% endblock %}
-        </td>
-    </tr>
-    </tfoot>
+    {% block footer %}
+        {% if dataGrid.paginator.count > dataGrid.paginator.totalItemCount %}
+            <tfoot>
+            <tr>
+                <td colspan="{{ dataGrid.columns|count }}">
+                    {% block paginator %}
+                        {{ dump(dataGrid.paginator) }}
+                        <div class="d-flex align-self-center justify-content-center">{{ knp_pagination_render(dataGrid.paginator) }}</div>
+                    {% endblock %}
+                </td>
+            </tr>
+            </tfoot>
+        {% endif %}
+    {% endblock %}
     <tbody>
     {% for row in dataGrid.paginator %}
         <tr>
