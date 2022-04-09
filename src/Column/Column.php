@@ -164,10 +164,10 @@ final class Column
         return $this->iconClass;
     }
 
-    public function getValue(mixed $value): mixed
+    public function getValue(mixed $value, mixed $row, string $columnName): mixed
     {
         if ($this->valueCallback !== null) {
-            return call_user_func($this->valueCallback, $value);
+            return call_user_func($this->valueCallback, $value, $row, $columnName);
         }
 
         return $value;
