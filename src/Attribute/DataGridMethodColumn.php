@@ -7,6 +7,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 final class DataGridMethodColumn
 {
+    /** @var callable|null  */
+    private mixed $routeAttributesCallback;
+
+    /** @var callable|null  */
+    private mixed $columnAttributesCallback;
+
     public function __construct(
         private int $order = 0,
         private ?string $label = null,
@@ -14,15 +20,14 @@ final class DataGridMethodColumn
         private bool $html = false,
         private ?string $route = null,
         private array $routeAttributes = [],
-        private ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         private ?string $routeLocale = null,
         private ?string $routeRole = null,
+        private array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ) {
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
+        $this->routeAttributesCallback = $routeAttributesCallback;
+        $this->columnAttributesCallback = $columnAttributesCallback;
     }
 
     public function getOrder(): int
@@ -55,7 +60,7 @@ final class DataGridMethodColumn
         return $this->routeAttributes;
     }
 
-    public function getRouteAttributesCallback(): ?array
+    public function getRouteAttributesCallback(): ?callable
     {
         return $this->routeAttributesCallback;
     }
@@ -68,5 +73,15 @@ final class DataGridMethodColumn
     public function getRouteRole(): ?string
     {
         return $this->routeRole;
+    }
+
+    public function getColumnAttributes(): array
+    {
+        return $this->columnAttributes;
+    }
+
+    public function getColumnAttributesCallback(): ?callable
+    {
+        return $this->columnAttributesCallback;
     }
 }

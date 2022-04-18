@@ -4,6 +4,15 @@ namespace Pageon\DoctrineDataGridBundle\Column;
 
 final class Column
 {
+    /** @var callable  */
+    private mixed $routeAttributesCallback;
+
+    /** @var callable  */
+    private mixed $columnAttributesCallback;
+
+    /** @var callable  */
+    private mixed $valueCallback;
+
     public function __construct(
         private string $name,
         private string $label,
@@ -13,17 +22,23 @@ final class Column
         private int $order = 0,
         private ?string $route = null,
         private array $routeAttributes = [],
-        private ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         ?string $routeLocale = null,
         private ?string $class = null,
         private ?string $iconClass = null,
-        private ?array $valueCallback = null,
+        ?callable $valueCallback = null,
         private bool $html = false,
         private bool $showColumnLabel = true,
+        private array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ) {
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
         }
+
+        $this->routeAttributesCallback = $routeAttributesCallback;
+        $this->columnAttributesCallback = $columnAttributesCallback;
+        $this->valueCallback = $valueCallback;
     }
 
     public static function createPropertyColumn(
@@ -35,11 +50,13 @@ final class Column
         int $order,
         ?string $route = null,
         array $routeAttributes = [],
-        ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         ?string $routeLocale = null,
         ?string $class = null,
-        ?array $valueCallback = null,
+        ?callable $valueCallback = null,
         bool $html = false,
+        array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ): self {
         return new self(
             name: $name,
@@ -55,6 +72,8 @@ final class Column
             class: $class,
             valueCallback: $valueCallback,
             html: $html,
+            columnAttributes: $columnAttributes,
+            columnAttributesCallback: $columnAttributesCallback,
         );
     }
 
@@ -64,10 +83,12 @@ final class Column
         int $order,
         ?string $route = null,
         array $routeAttributes = [],
-        ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         ?string $routeLocale = null,
         ?string $class = null,
         bool $html = false,
+        array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ): self {
         return new self(
             name: $name,
@@ -79,6 +100,8 @@ final class Column
             routeLocale: $routeLocale,
             class: $class,
             html: $html,
+            columnAttributes: $columnAttributes,
+            columnAttributesCallback: $columnAttributesCallback,
         );
     }
 
@@ -87,10 +110,13 @@ final class Column
         int $order = 0,
         ?string $route = null,
         array $routeAttributes = [],
-        ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         ?string $routeLocale = null,
         ?string $class = null,
         ?string $iconClass = null,
+        ?callable $valueCallback = null,
+        array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ): self {
         return new self(
             name: $label,
@@ -102,7 +128,10 @@ final class Column
             routeLocale: $routeLocale,
             class: $class,
             iconClass: $iconClass,
+            valueCallback: $valueCallback,
             showColumnLabel: false,
+            columnAttributes: $columnAttributes,
+            columnAttributesCallback: $columnAttributesCallback,
         );
     }
 
@@ -148,10 +177,19 @@ final class Column
     public function getRouteAttributes(object $entity): array
     {
         if ($this->routeAttributesCallback !== null) {
-            return $this->routeAttributes + call_user_func($this->routeAttributesCallback, $entity);
+            return call_user_func($this->routeAttributesCallback, $entity, $this->routeAttributes);
         }
 
         return $this->routeAttributes;
+    }
+
+    public function getColumnAttributes(object $entity): array
+    {
+        if ($this->columnAttributesCallback !== null) {
+            return call_user_func($this->columnAttributesCallback, $entity, $this->columnAttributes);
+        }
+
+        return $this->columnAttributes;
     }
 
     public function getClass(): ?string

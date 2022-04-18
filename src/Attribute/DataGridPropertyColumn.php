@@ -7,20 +7,34 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class DataGridPropertyColumn
 {
+    /** @var callable|null  */
+    private mixed $routeAttributesCallback;
+
+    /** @var callable|null  */
+    private mixed $columnAttributesCallback;
+
+    /** @var callable|null  */
+    private mixed $valueCallback;
+
     public function __construct(
         private bool $sortable = false,
         private bool $filterable = false,
         private int $order = 0,
         private ?string $label = null,
         private ?string $class = null,
-        private ?array $valueCallback = null,
+        ?callable $valueCallback = null,
         private bool $html = false,
         private ?string $route = null,
         private array $routeAttributes = [],
-        private ?array $routeAttributesCallback = null,
+        ?callable $routeAttributesCallback = null,
         private ?string $routeLocale = null,
         private ?string $routeRole = null,
+        private array $columnAttributes = [],
+        ?callable $columnAttributesCallback = null,
     ) {
+        $this->valueCallback = $valueCallback;
+        $this->routeAttributesCallback = $routeAttributesCallback;
+        $this->columnAttributesCallback = $columnAttributesCallback;
     }
 
     public function isSortable(): bool
@@ -48,7 +62,7 @@ final class DataGridPropertyColumn
         return $this->class;
     }
 
-    public function getValueCallback(): ?array
+    public function getValueCallback(): ?callable
     {
         return $this->valueCallback;
     }
@@ -68,7 +82,7 @@ final class DataGridPropertyColumn
         return $this->routeAttributes;
     }
 
-    public function getRouteAttributesCallback(): ?array
+    public function getRouteAttributesCallback(): ?callable
     {
         return $this->routeAttributesCallback;
     }
@@ -81,5 +95,15 @@ final class DataGridPropertyColumn
     public function getRouteRole(): ?string
     {
         return $this->routeRole;
+    }
+
+    public function getColumnAttributes(): array
+    {
+        return $this->columnAttributes;
+    }
+
+    public function getColumnAttributesCallback(): ?callable
+    {
+        return $this->columnAttributesCallback;
     }
 }

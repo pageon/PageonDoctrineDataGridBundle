@@ -13,6 +13,7 @@ use Pageon\DoctrineDataGridBundle\Column\Column;
 use ProxyManager\Proxy\LazyLoadingInterface;
 use ProxyManager\Proxy\ValueHolderInterface;
 use ReflectionClass;
+use Stringable;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -56,15 +57,23 @@ final class DataGridFactory
         return new DataGrid(
             $this->paginator->paginate($queryBuilder, $page, $limit),
             $columns,
-            $dataGridInfo->getNoResultsMessage()
+            $dataGridInfo->getNoResultsMessage(),
+            $dataGridInfo->getRowAttributes(),
+            $dataGridInfo->getRowAttributesCallback(),
         );
     }
 
+    /**
+     * @param object[] $data
+     * @param array{string?:int|float|Stringable} $rowAttributes
+     */
     public function forArray(
         string $fullyQualifiedClassName,
         array $data = [],
         ?int $limit = null,
-        Column ...$extraColumns
+        array $rowAttributes = [],
+        ?callable $rowAttributesCallback = null,
+        Column ...$extraColumns,
     ): DataGrid {
         $classInfo = new ReflectionClass($fullyQualifiedClassName);
         /** @var DataGridAttribute $dataGridInfo */
@@ -81,7 +90,9 @@ final class DataGridFactory
         return new DataGrid(
             $this->paginator->paginate($data, $page, $limit),
             $columns,
-            $dataGridInfo->getNoResultsMessage()
+            $dataGridInfo->getNoResultsMessage(),
+            $rowAttributes,
+            $rowAttributesCallback
         );
     }
 
@@ -124,6 +135,8 @@ final class DataGridFactory
                 class: $columnProperties->getClass(),
                 valueCallback: $columnProperties->getValueCallback(),
                 html: $columnProperties->isHtml(),
+                columnAttributes: $columnProperties->getColumnAttributes(),
+                columnAttributesCallback: $columnProperties->getColumnAttributesCallback(),
             );
         }
 
@@ -155,6 +168,8 @@ final class DataGridFactory
                 routeLocale: $showLink ? $methodProperties->getRouteLocale() : null,
                 class: $methodProperties->getClass(),
                 html: $methodProperties->isHtml(),
+                columnAttributes: $methodProperties->getColumnAttributes(),
+                columnAttributesCallback: $methodProperties->getColumnAttributesCallback(),
             );
         }
 
@@ -177,6 +192,9 @@ final class DataGridFactory
                 routeLocale: $actionProperties->getRouteLocale(),
                 class: $actionProperties->getClass(),
                 iconClass: $actionProperties->getIconClass(),
+                valueCallback: $actionProperties->getValueCallback(),
+                columnAttributes: $actionProperties->getColumnAttributes(),
+                columnAttributesCallback: $actionProperties->getColumnAttributesCallback(),
             );
         }
 

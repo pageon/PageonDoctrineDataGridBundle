@@ -9,6 +9,9 @@ final class DataGrid
 {
     private const KNP_PAGINATOR_DEFAULT = null;
 
+    /** @var callable  */
+    private mixed $rowAttributesCallback;
+
     public function __construct(
         private string $queryBuilderAlias,
         private string $noResultsMessage = 'No results',
@@ -20,7 +23,10 @@ final class DataGrid
         private ?bool $distinct = self::KNP_PAGINATOR_DEFAULT,
         private ?string $pageOutOfRange = self::KNP_PAGINATOR_DEFAULT,
         private ?int $defaultLimit = self::KNP_PAGINATOR_DEFAULT,
+        private array $rowAttributes = [],
+        ?callable $rowAttributesCallback = null,
     ) {
+        $this->rowAttributesCallback = $rowAttributesCallback;
     }
 
     public function getQueryBuilderAlias(): string
@@ -50,5 +56,15 @@ final class DataGrid
                 return $value !== null;
             }
         );
+    }
+
+    public function getRowAttributes(): array
+    {
+        return $this->rowAttributes;
+    }
+
+    public function getRowAttributesCallback(): ?callable
+    {
+        return $this->rowAttributesCallback;
     }
 }
