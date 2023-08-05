@@ -16,6 +16,7 @@ use ReflectionClass;
 use Stringable;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\VarExporter\LazyObjectInterface;
 
 final class DataGridFactory
 {
@@ -218,6 +219,9 @@ final class DataGridFactory
         }
         if ($paginator instanceof ValueHolderInterface) {
             $paginator = $paginator->getWrappedValueHolderValue();
+        }
+        if ($paginator instanceof LazyObjectInterface) {
+            $paginator = $paginator->initializeLazyObject();
         }
 
         $paginatorInfo = new ReflectionClass($paginator);
