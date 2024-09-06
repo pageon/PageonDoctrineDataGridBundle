@@ -28,7 +28,7 @@
     </thead>
     {% endblock %}
     {% block tfoot %}
-        {% if dataGrid.paginator.count > dataGrid.paginator.totalItemCount %}
+        {% if dataGrid.paginator.count < dataGrid.paginator.totalItemCount %}
         <tfoot>
             <tr>
                 <td colspan="{{ dataGrid.columns|count }}">
