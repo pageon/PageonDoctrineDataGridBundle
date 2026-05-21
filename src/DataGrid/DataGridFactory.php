@@ -10,8 +10,6 @@ use Pageon\DoctrineDataGridBundle\Attribute\DataGridActionColumn;
 use Pageon\DoctrineDataGridBundle\Attribute\DataGridMethodColumn;
 use Pageon\DoctrineDataGridBundle\Attribute\DataGridPropertyColumn;
 use Pageon\DoctrineDataGridBundle\Column\Column;
-use ProxyManager\Proxy\LazyLoadingInterface;
-use ProxyManager\Proxy\ValueHolderInterface;
 use ReflectionClass;
 use Stringable;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -214,12 +212,6 @@ final class DataGridFactory
         }
 
         $paginator = $this->paginator;
-        if ($paginator instanceof LazyLoadingInterface && !$paginator->isProxyInitialized()) {
-            $paginator->initializeProxy();
-        }
-        if ($paginator instanceof ValueHolderInterface) {
-            $paginator = $paginator->getWrappedValueHolderValue();
-        }
         if ($paginator instanceof LazyObjectInterface) {
             $paginator = $paginator->initializeLazyObject();
         }
