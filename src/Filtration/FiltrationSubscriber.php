@@ -24,8 +24,8 @@ final class FiltrationSubscriber implements EventSubscriberInterface
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $event->getEventDispatcher();
         // hook the standard PropelQuerySubscriber and our custom QuerySubscriber
-        $dispatcher->addSubscriber(new QuerySubscriber($event->getRequest()));
-        $dispatcher->addSubscriber(new PropelQuerySubscriber($event->getRequest()));
+        $dispatcher->addSubscriber(new QuerySubscriber($event->getArgumentAccess()));
+        $dispatcher->addSubscriber(new PropelQuerySubscriber());
 
         $this->isLoaded = true;
     }
