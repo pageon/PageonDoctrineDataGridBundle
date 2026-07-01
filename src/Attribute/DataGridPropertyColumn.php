@@ -7,6 +7,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class DataGridPropertyColumn
 {
+    private ?string $label;
+
     /** @var callable|null  */
     private mixed $routeAttributesCallback;
 
@@ -20,7 +22,7 @@ final class DataGridPropertyColumn
         private bool $sortable = false,
         private bool $filterable = false,
         private int $order = 0,
-        private ?string $label = null,
+        string|\Stringable|null $label = null,
         private ?string $class = null,
         ?callable $valueCallback = null,
         private bool $html = false,
@@ -32,6 +34,7 @@ final class DataGridPropertyColumn
         private array $columnAttributes = [],
         ?callable $columnAttributesCallback = null,
     ) {
+        $this->label = $label !== null ? (string) $label : null;
         $this->valueCallback = $valueCallback;
         $this->routeAttributesCallback = $routeAttributesCallback;
         $this->columnAttributesCallback = $columnAttributesCallback;

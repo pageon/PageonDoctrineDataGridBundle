@@ -7,6 +7,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 final class DataGridMethodColumn
 {
+    private ?string $label;
+
     /** @var callable|null  */
     private mixed $routeAttributesCallback;
 
@@ -15,7 +17,7 @@ final class DataGridMethodColumn
 
     public function __construct(
         private int $order = 0,
-        private ?string $label = null,
+        string|\Stringable|null $label = null,
         private ?string $class = null,
         private bool $html = false,
         private ?string $route = null,
@@ -26,6 +28,7 @@ final class DataGridMethodColumn
         private array $columnAttributes = [],
         ?callable $columnAttributesCallback = null,
     ) {
+        $this->label = $label !== null ? (string) $label : null;
         $this->routeAttributesCallback = $routeAttributesCallback;
         $this->columnAttributesCallback = $columnAttributesCallback;
     }

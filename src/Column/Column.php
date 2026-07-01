@@ -4,6 +4,8 @@ namespace Pageon\DoctrineDataGridBundle\Column;
 
 final class Column
 {
+    private string $label;
+
     /** @var callable  */
     private mixed $routeAttributesCallback;
 
@@ -15,7 +17,7 @@ final class Column
 
     public function __construct(
         private string $name,
-        private string $label,
+        string|\Stringable $label,
         private ?string $entityAlias = null,
         private bool $sortable = false,
         private bool $filterable = false,
@@ -32,6 +34,8 @@ final class Column
         private array $columnAttributes = [],
         ?callable $columnAttributesCallback = null,
     ) {
+        $this->label = (string) $label;
+
         if ($routeLocale !== null) {
             $this->routeAttributes['_locale'] = $routeLocale;
         }
@@ -43,7 +47,7 @@ final class Column
 
     public static function createPropertyColumn(
         string $name,
-        string $label,
+        string|\Stringable $label,
         ?string $entityAlias,
         bool $sortable,
         bool $filterable,
@@ -79,7 +83,7 @@ final class Column
 
     public static function createMethodColumn(
         string $name,
-        string $label,
+        string|\Stringable $label,
         int $order,
         ?string $route = null,
         array $routeAttributes = [],
@@ -106,7 +110,7 @@ final class Column
     }
 
     public static function createActionColumn(
-        string $label,
+        string|\Stringable $label,
         int $order = 0,
         ?string $route = null,
         array $routeAttributes = [],

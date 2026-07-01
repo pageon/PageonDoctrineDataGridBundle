@@ -7,6 +7,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class DataGridActionColumn
 {
+    private ?string $label;
+
     /** @var callable|null  */
     private mixed $routeAttributesCallback;
 
@@ -22,7 +24,7 @@ final class DataGridActionColumn
         ?callable $routeAttributesCallback = null,
         private ?string $routeLocale = null,
         private int $order = 1,
-        private ?string $label = null,
+        string|\Stringable|null $label = null,
         private string $class = 'btn btn-primary btn-sm float-end',
         private ?string $iconClass = null,
         ?callable $valueCallback = null,
@@ -30,6 +32,7 @@ final class DataGridActionColumn
         private array $columnAttributes = [],
         ?callable $columnAttributesCallback = null,
     ) {
+        $this->label = $label !== null ? (string) $label : null;
         $this->valueCallback = $valueCallback;
         $this->routeAttributesCallback = $routeAttributesCallback;
         $this->columnAttributesCallback = $columnAttributesCallback;
