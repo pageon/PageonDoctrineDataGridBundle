@@ -7,6 +7,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class DataGrid
 {
+    public string $noResultsMessage;
+
     private const null KNP_PAGINATOR_DEFAULT = null;
 
     /** @var callable|null */
@@ -14,7 +16,7 @@ final readonly class DataGrid
 
     public function __construct(
         public string $queryBuilderAlias,
-        public string $noResultsMessage = 'No results',
+        string|\Stringable $noResultsMessage = 'No results',
         public ?string $pageParameterName = self::KNP_PAGINATOR_DEFAULT,
         public ?string $sortFieldParameterName = self::KNP_PAGINATOR_DEFAULT,
         public ?string $sortDirectionParameterName = self::KNP_PAGINATOR_DEFAULT,
@@ -26,6 +28,7 @@ final readonly class DataGrid
         public array $rowAttributes = [],
         ?callable $rowAttributesCallback = null,
     ) {
+        $this->noResultsMessage = (string) $noResultsMessage;
         $this->rowAttributesCallback = $rowAttributesCallback;
     }
 

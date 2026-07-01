@@ -21,7 +21,7 @@ final class DataGrid
         public readonly PaginationInterface $paginator,
         /** @var Column[] $columns */
         array $columns,
-        string $noResultsMessage,
+        string|Stringable $noResultsMessage,
         /** @var array{string?:int|float|string|Stringable} $rowAttributes */
         array $rowAttributes = [],
         ?callable $rowAttributesCallback = null,
@@ -30,7 +30,7 @@ final class DataGrid
         $this->rowAttributes = $rowAttributes;
         usort($columns, fn(Column $a, Column $b) => $a->order <=> $b->order);
         $this->columns = $columns;
-        $this->noResultsMessage = $noResultsMessage;
+        $this->noResultsMessage = (string) $noResultsMessage;
     }
 
     /** @return array{string?:int|float|string|Stringable} */
