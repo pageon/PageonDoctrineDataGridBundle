@@ -11,9 +11,9 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use UnexpectedValueException;
 
-class QuerySubscriber implements EventSubscriberInterface
+final readonly class QuerySubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly ArgumentAccessInterface $argumentAccess)
+    public function __construct(private ArgumentAccessInterface $argumentAccess)
     {
     }
 
@@ -51,12 +51,18 @@ class QuerySubscriber implements EventSubscriberInterface
         $columns = (array) $columns;
 
         if (isset($event->options[PaginatorInterface::FILTER_FIELD_ALLOW_LIST])) {
-            foreach ($columns as $column) {
-                if (!in_array($column, $event->options[PaginatorInterface::FILTER_FIELD_ALLOW_LIST], true)) {
-                    throw new UnexpectedValueException(
-                        "Cannot filter by: [{$column}] this field is not in allow list"
-                    );
-                }
+            $invalidColumn = array_find(
+                $columns,
+                fn(string $column) => !in_array(
+                    $column,
+                    $event->options[PaginatorInterface::FILTER_FIELD_ALLOW_LIST],
+                    true
+                )
+            );
+            if ($invalidColumn !== null) {
+                throw new UnexpectedValueException(
+                    "Cannot filter by: [{$invalidColumn}] this field is not in allow list"
+                );
             }
         }
 

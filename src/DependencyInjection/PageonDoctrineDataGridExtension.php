@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
-class PageonDoctrineDataGridExtension extends Extension
+final class PageonDoctrineDataGridExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

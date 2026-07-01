@@ -4,41 +4,51 @@ namespace Pageon\DoctrineDataGridBundle\Column;
 
 final class Column
 {
-    private string $label;
+    public readonly string $label;
+    public readonly array $routeAttributes;
 
-    /** @var callable  */
+    /** @var callable|null */
     private mixed $routeAttributesCallback;
 
-    /** @var callable  */
+    /** @var callable|null */
     private mixed $columnAttributesCallback;
 
-    /** @var callable  */
+    /** @var callable|null */
     private mixed $valueCallback;
 
+    public string $fullName {
+        get => $this->entityAlias === null ? $this->name : $this->entityAlias . '.' . $this->name;
+    }
+
+    public bool $hasValueCallback {
+        get => $this->valueCallback !== null;
+    }
+
     public function __construct(
-        private string $name,
+        public readonly string $name,
         string|\Stringable $label,
-        private ?string $entityAlias = null,
-        private bool $sortable = false,
-        private bool $filterable = false,
-        private int $order = 0,
-        private ?string $route = null,
-        private array $routeAttributes = [],
+        public readonly ?string $entityAlias = null,
+        public readonly bool $sortable = false,
+        public readonly bool $filterable = false,
+        public readonly int $order = 0,
+        public readonly ?string $route = null,
+        array $routeAttributes = [],
         ?callable $routeAttributesCallback = null,
         ?string $routeLocale = null,
-        private ?string $class = null,
-        private ?string $iconClass = null,
+        public readonly ?string $class = null,
+        public readonly ?string $iconClass = null,
         ?callable $valueCallback = null,
-        private bool $html = false,
-        private bool $showColumnLabel = true,
-        private array $columnAttributes = [],
+        public readonly bool $html = false,
+        public readonly bool $showColumnLabel = true,
+        private readonly array $columnAttributes = [],
         ?callable $columnAttributesCallback = null,
     ) {
         $this->label = (string) $label;
 
         if ($routeLocale !== null) {
-            $this->routeAttributes['_locale'] = $routeLocale;
+            $routeAttributes['_locale'] = $routeLocale;
         }
+        $this->routeAttributes = $routeAttributes;
 
         $this->routeAttributesCallback = $routeAttributesCallback;
         $this->columnAttributesCallback = $columnAttributesCallback;
@@ -123,7 +133,7 @@ final class Column
         ?callable $columnAttributesCallback = null,
     ): self {
         return new self(
-            name: $label,
+            name: (string) $label,
             label: $label,
             order: $order,
             route: $route,
@@ -137,45 +147,6 @@ final class Column
             columnAttributes: $columnAttributes,
             columnAttributesCallback: $columnAttributesCallback,
         );
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    public function isSortable(): bool
-    {
-        return $this->sortable;
-    }
-
-    public function isFilterable(): bool
-    {
-        return $this->filterable;
-    }
-
-    public function getFullName(): string
-    {
-        if ($this->entityAlias === null) {
-            return $this->name;
-        }
-
-        return $this->entityAlias . '.' . $this->name;
-    }
-
-    public function getOrder(): int
-    {
-        return $this->order;
-    }
-
-    public function getRoute(): ?string
-    {
-        return $this->route;
     }
 
     public function getRouteAttributes(object $entity): array
@@ -196,16 +167,6 @@ final class Column
         return $this->columnAttributes;
     }
 
-    public function getClass(): ?string
-    {
-        return $this->class;
-    }
-
-    public function getIconClass(): ?string
-    {
-        return $this->iconClass;
-    }
-
     public function getValue(mixed $value, mixed $row, string $columnName): mixed
     {
         if ($this->valueCallback !== null) {
@@ -213,20 +174,5 @@ final class Column
         }
 
         return $value;
-    }
-
-    public function isHtml(): bool
-    {
-        return $this->html;
-    }
-
-    public function hasValueCallback(): bool
-    {
-        return $this->valueCallback !== null;
-    }
-
-    public function showColumnLabel(): bool
-    {
-        return $this->showColumnLabel;
     }
 }

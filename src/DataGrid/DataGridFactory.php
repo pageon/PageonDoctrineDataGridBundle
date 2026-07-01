@@ -4,8 +4,8 @@ namespace Pageon\DoctrineDataGridBundle\DataGrid;
 
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
-use Pageon\DoctrineDataGridBundle\Attribute\DataGrid as DataGridAttribute;
 use Knp\Component\Pager\PaginatorInterface;
+use Pageon\DoctrineDataGridBundle\Attribute\DataGrid as DataGridAttribute;
 use Pageon\DoctrineDataGridBundle\Attribute\DataGridActionColumn;
 use Pageon\DoctrineDataGridBundle\Attribute\DataGridMethodColumn;
 use Pageon\DoctrineDataGridBundle\Attribute\DataGridPropertyColumn;
@@ -21,10 +21,10 @@ final class DataGridFactory
     private ?string $defaultPageParameterName = null;
 
     public function __construct(
-        private PaginatorInterface $paginator,
-        private EntityManagerInterface $entityManager,
-        private RequestStack $requestStack,
-        private ?AuthorizationCheckerInterface $authorizationChecker = null,
+        private readonly PaginatorInterface $paginator,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RequestStack $requestStack,
+        private readonly ?AuthorizationCheckerInterface $authorizationChecker = null,
     ) {
     }
 
@@ -40,25 +40,22 @@ final class DataGridFactory
         $dataGridInfo = ($classInfo->getAttributes(DataGridAttribute::class)[0] ?? null)?->newInstance()
                         ?? throw new InvalidArgumentException('The entity needs to have the DataGrid attribute');
 
-        $queryBuilder = $repository->createQueryBuilder($dataGridInfo->getQueryBuilderAlias())
-            ->select($dataGridInfo->getQueryBuilderAlias());
+        $queryBuilder = $repository->createQueryBuilder($dataGridInfo->queryBuilderAlias)
+            ->select($dataGridInfo->queryBuilderAlias);
         if ($queryBuilderCallback !== null) {
             $queryBuilderCallback($queryBuilder);
         }
 
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
-        $columns = $this->getColumns(
-            $classInfo,
-            $dataGridInfo->getQueryBuilderAlias()
-        );
+        $columns = $this->getColumns($classInfo, $dataGridInfo->queryBuilderAlias);
         array_push($columns, ...$extraColumns);
 
         return new DataGrid(
             $this->paginator->paginate($queryBuilder, $page, $limit),
             $columns,
-            $dataGridInfo->getNoResultsMessage(),
-            $dataGridInfo->getRowAttributes(),
-            $dataGridInfo->getRowAttributesCallback(),
+            $dataGridInfo->noResultsMessage,
+            $dataGridInfo->rowAttributes,
+            $dataGridInfo->rowAttributesCallback,
         );
     }
 
@@ -80,18 +77,15 @@ final class DataGridFactory
                         ?? throw new InvalidArgumentException('The class needs to have the DataGrid attribute');
 
         $page = $this->requestStack->getMainRequest()->query->getInt($this->getDefaultPageParameterName(), 1);
-        $columns = $this->getColumns(
-            $classInfo,
-            $dataGridInfo->getQueryBuilderAlias()
-        );
+        $columns = $this->getColumns($classInfo, $dataGridInfo->queryBuilderAlias);
         array_push($columns, ...$extraColumns);
 
         return new DataGrid(
             $this->paginator->paginate($data, $page, $limit),
             $columns,
-            $dataGridInfo->getNoResultsMessage(),
+            $dataGridInfo->noResultsMessage,
             $rowAttributes,
-            $rowAttributesCallback
+            $rowAttributesCallback,
         );
     }
 
@@ -108,34 +102,29 @@ final class DataGridFactory
                 continue;
             }
 
-            /** @var DataGridPropertyColumn $columnProperties */
-            $columnProperties = $attribute->newInstance();
+            /** @var DataGridPropertyColumn $col */
+            $col = $attribute->newInstance();
 
-            $showLink = true;
-            if (
-                $this->authorizationChecker !== null
-                && $columnProperties->getRouteRole() !== null
-                && !$this->authorizationChecker->isGranted($columnProperties->getRouteRole())
-            ) {
-                $showLink = false;
-            }
+            $showLink = $col->routeRole === null
+                || $this->authorizationChecker === null
+                || $this->authorizationChecker->isGranted($col->routeRole);
 
             $columns[] = Column::createPropertyColumn(
                 name: $property->getName(),
-                label: $columnProperties->getLabel() ?? $property->getName(),
+                label: $col->label ?? $property->getName(),
                 entityAlias: $className,
-                sortable: $columnProperties->isSortable(),
-                filterable: $columnProperties->isFilterable(),
-                order: $columnProperties->getOrder(),
-                route: $showLink ? $columnProperties->getRoute() : null,
-                routeAttributes: $showLink ? $columnProperties->getRouteAttributes() : null,
-                routeAttributesCallback: $showLink ? $columnProperties->getRouteAttributesCallback() : null,
-                routeLocale: $showLink ? $columnProperties->getRouteLocale() : null,
-                class: $columnProperties->getClass(),
-                valueCallback: $columnProperties->getValueCallback(),
-                html: $columnProperties->isHtml(),
-                columnAttributes: $columnProperties->getColumnAttributes(),
-                columnAttributesCallback: $columnProperties->getColumnAttributesCallback(),
+                sortable: $col->sortable,
+                filterable: $col->filterable,
+                order: $col->order,
+                route: $showLink ? $col->route : null,
+                routeAttributes: $showLink ? $col->routeAttributes : [],
+                routeAttributesCallback: $showLink ? $col->routeAttributesCallback : null,
+                routeLocale: $showLink ? $col->routeLocale : null,
+                class: $col->class,
+                valueCallback: $col->valueCallback,
+                html: $col->html,
+                columnAttributes: $col->columnAttributes,
+                columnAttributesCallback: $col->columnAttributesCallback,
             );
         }
 
@@ -145,62 +134,54 @@ final class DataGridFactory
                 continue;
             }
 
-            /** @var DataGridMethodColumn $methodProperties */
-            $methodProperties = $attribute->newInstance();
+            /** @var DataGridMethodColumn $col */
+            $col = $attribute->newInstance();
 
-            $showLink = true;
-            if (
-                $this->authorizationChecker !== null
-                && $methodProperties->getRouteRole() !== null
-                && !$this->authorizationChecker->isGranted($methodProperties->getRouteRole())
-            ) {
-                $showLink = false;
-            }
+            $showLink = $col->routeRole === null
+                || $this->authorizationChecker === null
+                || $this->authorizationChecker->isGranted($col->routeRole);
 
             $columns[] = Column::createMethodColumn(
                 name: $method->getName(),
-                label: $methodProperties->getLabel() ?? $method->getName(),
-                order: $methodProperties->getOrder(),
-                route: $showLink ? $methodProperties->getRoute() : null,
-                routeAttributes: $showLink ? $methodProperties->getRouteAttributes() : null,
-                routeAttributesCallback: $showLink ? $methodProperties->getRouteAttributesCallback() : null,
-                routeLocale: $showLink ? $methodProperties->getRouteLocale() : null,
-                class: $methodProperties->getClass(),
-                html: $methodProperties->isHtml(),
-                columnAttributes: $methodProperties->getColumnAttributes(),
-                columnAttributesCallback: $methodProperties->getColumnAttributesCallback(),
+                label: $col->label ?? $method->getName(),
+                order: $col->order,
+                route: $showLink ? $col->route : null,
+                routeAttributes: $showLink ? $col->routeAttributes : [],
+                routeAttributesCallback: $showLink ? $col->routeAttributesCallback : null,
+                routeLocale: $showLink ? $col->routeLocale : null,
+                class: $col->class,
+                html: $col->html,
+                columnAttributes: $col->columnAttributes,
+                columnAttributesCallback: $col->columnAttributesCallback,
             );
         }
 
         foreach ($classInfo->getAttributes(DataGridActionColumn::class) as $action) {
-            /** @var DataGridActionColumn $actionProperties */
-            $actionProperties = $action->newInstance();
+            /** @var DataGridActionColumn $col */
+            $col = $action->newInstance();
             if (
-                $this->authorizationChecker !== null
-                && $actionProperties->getRequiredRole() !== null
-                && !$this->authorizationChecker->isGranted($actionProperties->getRequiredRole())
+                $col->requiredRole !== null
+                && $this->authorizationChecker !== null
+                && !$this->authorizationChecker->isGranted($col->requiredRole)
             ) {
                 continue;
             }
             $columns[] = Column::createActionColumn(
-                label: $actionProperties->getLabel(),
-                order: $actionProperties->getOrder(),
-                route: $actionProperties->getRoute(),
-                routeAttributes: $actionProperties->getRouteAttributes(),
-                routeAttributesCallback: $actionProperties->getRouteAttributesCallback(),
-                routeLocale: $actionProperties->getRouteLocale(),
-                class: $actionProperties->getClass(),
-                iconClass: $actionProperties->getIconClass(),
-                valueCallback: $actionProperties->getValueCallback(),
-                columnAttributes: $actionProperties->getColumnAttributes(),
-                columnAttributesCallback: $actionProperties->getColumnAttributesCallback(),
+                label: $col->label,
+                order: $col->order,
+                route: $col->route,
+                routeAttributes: $col->routeAttributes,
+                routeAttributesCallback: $col->routeAttributesCallback,
+                routeLocale: $col->routeLocale,
+                class: $col->class,
+                iconClass: $col->iconClass,
+                valueCallback: $col->valueCallback,
+                columnAttributes: $col->columnAttributes,
+                columnAttributesCallback: $col->columnAttributesCallback,
             );
         }
 
-        usort($columns, static function (Column $a, Column $b) {
-            return $a->getOrder() <=> $b->getOrder();
-        });
-
+        usort($columns, fn(Column $a, Column $b) => $a->order <=> $b->order);
 
         return $columns;
     }
@@ -217,10 +198,7 @@ final class DataGridFactory
         }
 
         $paginatorInfo = new ReflectionClass($paginator);
-        $defaultOptionsProperty = $paginatorInfo->getProperty('defaultOptions');
-        $defaultOptionsProperty->setAccessible(true);
-
-        $defaultOptions = $defaultOptionsProperty->getValue($paginator);
+        $defaultOptions = $paginatorInfo->getProperty('defaultOptions')->getValue($paginator);
         $this->defaultPageParameterName = $defaultOptions[PaginatorInterface::PAGE_PARAMETER_NAME];
 
         return $this->defaultPageParameterName;

@@ -8,36 +8,29 @@ use Stringable;
 
 final class DataGrid
 {
+    public readonly array $columns;
+    public readonly string $noResultsMessage;
+
     /** @var callable|null */
     private mixed $rowAttributesCallback;
 
+    /** @var array{string?:int|float|string|Stringable} */
+    private array $rowAttributes;
+
     public function __construct(
-        private PaginationInterface $paginator,
+        public readonly PaginationInterface $paginator,
         /** @var Column[] $columns */
-        private array $columns,
-        private string $noResultsMessage,
+        array $columns,
+        string $noResultsMessage,
         /** @var array{string?:int|float|string|Stringable} $rowAttributes */
-        private array $rowAttributes = [],
+        array $rowAttributes = [],
         ?callable $rowAttributesCallback = null,
     ) {
         $this->rowAttributesCallback = $rowAttributesCallback;
-        usort($this->columns, static fn (Column $a, Column $b) => $a->getOrder() <=> $b->getOrder());
-    }
-
-    public function getPaginator(): PaginationInterface
-    {
-        return $this->paginator;
-    }
-
-    /** @return Column[] */
-    public function getColumns(): array
-    {
-        return $this->columns;
-    }
-
-    public function getNoResultsMessage(): string
-    {
-        return $this->noResultsMessage;
+        $this->rowAttributes = $rowAttributes;
+        usort($columns, fn(Column $a, Column $b) => $a->order <=> $b->order);
+        $this->columns = $columns;
+        $this->noResultsMessage = $noResultsMessage;
     }
 
     /** @return array{string?:int|float|string|Stringable} */
